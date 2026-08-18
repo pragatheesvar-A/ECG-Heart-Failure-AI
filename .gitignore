@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+
+# Environments
+.venv/
+.venv*/
+env/
+venv/
+ENV/
+
+# Testing & Cache
+.pytest_cache/
+.pytest-tmp/
+.coverage
+htmlcov/
+
+# Outputs & checkpoints
+outputs/
+*.pth
+*.pt
+*.onnx
+*.pkl
+*.h5
+
+# Large Data directories
+data/prepared/
+data/raw_ecg/
+data/raw/
+*.tar.gz
+*.zip
+
+# IDEs & System
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

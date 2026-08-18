@@ -1,0 +1,17 @@
+id,path,sampling_rate_hz,label,ecg_class,split
+train_label0_subject00,D:\ECG\data\raw_ecg\train_label0_subject00.npy,250,0,normal,train
+train_label0_subject01,D:\ECG\data\raw_ecg\train_label0_subject01.npy,250,0,normal,train
+train_label1_subject00,D:\ECG\data\raw_ecg\train_label1_subject00.npy,250,1,abnormal,train
+train_label1_subject01,D:\ECG\data\raw_ecg\train_label1_subject01.npy,250,1,abnormal,train
+val_label0_subject00,D:\ECG\data\raw_ecg\val_label0_subject00.npy,250,0,normal,val
+val_label0_subject01,D:\ECG\data\raw_ecg\val_label0_subject01.npy,250,0,normal,val
+val_label1_subject00,D:\ECG\data\raw_ecg\val_label1_subject00.npy,250,1,abnormal,val
+val_label1_subject01,D:\ECG\data\raw_ecg\val_label1_subject01.npy,250,1,abnormal,val
+calibration_label0_subject00,D:\ECG\data\raw_ecg\calibration_label0_subject00.npy,250,0,normal,calibration
+calibration_label0_subject01,D:\ECG\data\raw_ecg\calibration_label0_subject01.npy,250,0,normal,calibration
+calibration_label1_subject00,D:\ECG\data\raw_ecg\calibration_label1_subject00.npy,250,1,abnormal,calibration
+calibration_label1_subject01,D:\ECG\data\raw_ecg\calibration_label1_subject01.npy,250,1,abnormal,calibration
+test_label0_subject00,D:\ECG\data\raw_ecg\test_label0_subject00.npy,250,0,normal,test
+test_label0_subject01,D:\ECG\data\raw_ecg\test_label0_subject01.npy,250,0,normal,test
+test_label1_subject00,D:\ECG\data\raw_ecg\test_label1_subject00.npy,250,1,abnormal,test
+test_label1_subject01,D:\ECG\data\raw_ecg\test_label1_subject01.npy,250,1,abnormal,test

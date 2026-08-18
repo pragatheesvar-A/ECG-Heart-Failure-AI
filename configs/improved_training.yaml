@@ -1,0 +1,194 @@
+seed: 42
+
+# Data configuration
+data:
+  target_rate_hz: 128
+  hours: 24
+  window_seconds: 30
+  sequence_step_seconds: 120
+  standardize_mode: pad_or_crop_center
+  require_ecg_classes: true
+  
+  # Data augmentation (NEW)
+  augmentation:
+    enable: true
+    jitter: 0.01  # Add small random noise to ECG
+    jitter_prob: 0.5
+    scale: [0.95, 1.05]  # Scale amplitude variance
+    scale_prob: 0.5
+    time_warp: false  # Advanced, requires dtaidistance
+    crop_percent: [0.8, 1.0]  # Temporal cropping
+    crop_prob: 0.3
+    mixup: true  # Mix pairs of training samples
+    mixup_alpha: 0.2
+    cutmix_prob: 0.1  # Cut and mix patches
+
+# Model configuration
+model:
+  embedding_dim: 128
+  encoder_channels: [32, 64, 96, 128]
+  transformer_heads: 4
+  transformer_layers: 3
+  transformer_ff_dim: 256
+  
+  # Regularization (IMPROVED)
+  dropout: 0.3  # Increased from 0.15 to prevent overfitting
+  encoder_dropout: 0.2
+  attention_dropout: 0.2
+  embedding_dropout: 0.15
+  
+  # Normalization
+  use_layer_norm: true
+  
+  # Pre-normalization (better for stability)
+  prenorm_attention: true
+
+# Training configuration
+training:
+  # Data loading
+  batch_size: 32
+  sequence_batch_size: 4  # Increased from 2
+  num_workers: 4  # Use multiple workers for data loading
+  
+  # Learning rates
+  encoder_lr: 0.001
+  sequence_lr: 0.00005
+  weight_decay: 0.0005  # L2 regularization
+  
+  # Learning rate schedule (NEW)
+  lr_schedule: "cosine"  # Options: constant, cosine, linear, exponential
+  warmup_epochs: 5  # Linear warmup
+  warmup_start_factor: 0.1
+  
+  # Epochs and early stopping
+  epochs: 100  # Increased from 30 (early stopping will prevent overfitting)
+  patience: 15  # Increased from 7
+  patience_warmup: 10  # Allow more patience during warmup
+  
+  # Loss function
+  label_smoothing: 0.1  # Prevent overconfident predictions
+  class_weights: true  # Weight by class balance
+  
+  # Mixed precision training
+  amp: true
+  
+  # Gradient clipping (NEW)
+  grad_clip_value: 1.0
+  
+  # Regularization techniques
+  stochastic_depth: 0.1  # Drop entire residual blocks
+  
+paths:
+  output_dir: outputs
+
+# Evaluation configuration (NEW)
+evaluation:
+  # Metrics to track
+  metrics:
+    - auroc
+    - auprc
+    - sensitivity
+    - specificity
+    - f1
+    - accuracy
+  
+  # Calibration
+  calibration:
+    method: "isotonic"  # Better than logistic for non-linear curves
+    num_bins: 10
+    use_calibration_split: true
+  
+  # Uncertainty quantification
+  uncertainty:
+    enable: true
+    mc_dropout_samples: 10  # Monte Carlo dropout
+    mc_dropout_rate: 0.5
+    ensemble_size: 1  # Set to 5 for full ensemble
+  
+  # Bootstrap confidence intervals
+  bootstrap:
+    enable: true
+    n_repeats: 100
+    confidence_level: 0.95
+  
+  # Thresholds
+  threshold_specificity_targets: [0.90, 0.97]  # For moderate/high risk
+
+# Validation configuration
+validation:
+  # What to validate on
+  validation_split: "val"
+  
+  # Validation frequency
+  val_every_n_epochs: 1
+  
+  # Validation metric
+  validation_metric: "auroc"  # Early stop on AUROC, not loss
+  
+  # Stratified splits
+  stratified_splits: true
+  stratification_columns: ["label", "ecg_class"]
+  
+  # Cross-validation
+  cross_validation:
+    enable: false  # Set to true for k-fold
+    n_splits: 5
+    stratified: true
+
+# Logging and checkpointing
+logging:
+  log_every_n_batches: 100
+  log_to_file: true
+  log_dir: "logs"
+  
+checkpointing:
+  save_every_n_epochs: 1
+  save_best_only: true
+  save_optimizer: true
+  keep_last_n_checkpoints: 3
+
+# Explainability (NEW)
+explainability:
+  # Gradient-weighted attention
+  gradient_attention: true
+  attention_rollout: true  # Aggregate across layers
+  
+  # Feature importance
+  integrated_gradients: false  # Computationally expensive
+  
+  # Beat clustering
+  beat_clustering: true
+  beat_silhouette_threshold: 0.4
+  beat_kmeans_max_k: 8
+  
+  # Visualization
+  plot_attention_weights: true
+  plot_beat_clusters: true
+  plot_calibration_curve: true
+
+# Live monitoring configuration
+live_monitoring:
+  # Polling strategy
+  poll_seconds: 5
+  settle_seconds: 1  # Wait for file to stabilize
+  
+  # Buffer management
+  use_persistent_buffer: true
+  buffer_dir: "live_buffer"
+  
+  # Quality checks
+  quality_checks:
+    enable: true
+    min_signal_amplitude: 0.01
+    max_signal_amplitude: 10.0
+    sampling_rate_tolerance: 0.02  # Allow 2% deviation
+  
+  # Output strategy
+  emit_intermediate_status: true
+  emit_status_every_minutes: 10
+  emit_full_prediction_only_at_24h: true  # No partial scores
+  
+  # Error handling
+  retry_failed_chunks: true
+  max_retry_attempts: 3
+  retry_backoff_seconds: 30

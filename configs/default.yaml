@@ -1,0 +1,27 @@
+seed: 42
+data:
+  target_rate_hz: 128
+  hours: 24
+  window_seconds: 30
+  sequence_step_seconds: 120
+  standardize_mode: pad_or_crop_center
+  require_ecg_classes: true
+model:
+  embedding_dim: 128
+  encoder_channels: [32, 64, 96, 128]
+  transformer_heads: 4
+  transformer_layers: 3
+  transformer_ff_dim: 256
+  dropout: 0.15
+training:
+  batch_size: 32
+  sequence_batch_size: 2
+  encoder_lr: 0.001
+  sequence_lr: 0.00005
+  weight_decay: 0.0001
+  epochs: 30
+  patience: 7
+  num_workers: 0
+  amp: true
+paths:
+  output_dir: outputs
